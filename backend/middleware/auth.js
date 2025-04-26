@@ -7,9 +7,11 @@ module.exports = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Lưu thông tin user (userId, role) vào req
+    console.log("Decoded token:", decoded); // Debug
+    req.user = decoded;
     next();
   } catch (error) {
+    console.error("Token verification error:", error);
     res.status(401).json({ error: "Invalid token" });
   }
 };

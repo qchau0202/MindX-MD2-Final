@@ -48,4 +48,42 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "No token provided" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ success: false, message: "Invalid token" });
+  }
+};
+
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Người dùng không tồn tại",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error getting current user:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy thông tin người dùng: " + error.message,
+    });
+  }
+};
+
+module.exports = { register, login, getCurrentUser, authMiddleware };
