@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { getCurrentUser } from "../services/api";
-import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -9,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(true);
 
-  // Khôi phục trạng thái đăng nhập khi reload
+  // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
       if (token) {
@@ -46,12 +45,11 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
-    Navigate("/login", { replace: true });
     console.log("Logged out");
   };
 
   const updateUser = (updatedUser) => {
-    console.log("Updating user in context:", updatedUser); // Debug
+    console.log("Updating user in context:", updatedUser);
     setUser(updatedUser);
   };
 

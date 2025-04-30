@@ -9,15 +9,29 @@ const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  console.log(user);
+  console.log("Header: user =", user);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
   const menuItems = [
     {
       key: "profile",
-      label: <NavLink to="/profile" className="text-lg">My Profile</NavLink>,
+      label: (
+        <NavLink to="/profile" className="text-lg">
+          My Profile
+        </NavLink>
+      ),
     },
     {
       key: "logout",
-      label: <span onClick={logout} className="text-lg">Logout</span>,
+      label: (
+        <span onClick={handleLogout} className="text-lg">
+          Logout
+        </span>
+      ),
     },
   ];
 
@@ -41,13 +55,20 @@ const Header = () => {
 
         {/* Icons and Auth Buttons */}
         <Space size="large">
-          <Button
-            type="default"
-            icon={<FaBoxOpen />}
-            onClick={() => navigate("/orders")}
-          >
-            Order
-          </Button>
+          {user?.role !== "admin" && ( // Conditionally render Order button
+            <Button
+              type="default"
+              icon={<FaBoxOpen />}
+              onClick={() => navigate("/orders")}
+            >
+              Order
+            </Button>
+          )}
+          {user?.role === "admin" && (
+            <Button type="primary" onClick={() => navigate("/admin/dashboard")}>
+              Dashboard
+            </Button>
+          )}
           <HeartOutlined className="text-xl text-gray-600 hover:text-blue-600 cursor-pointer" />
           <Badge dot>
             <BellOutlined className="text-xl text-gray-600 hover:text-blue-600 cursor-pointer" />
@@ -81,6 +102,25 @@ const Header = () => {
         {/* Row 1: Icons and Auth Buttons */}
         <div className="flex justify-end items-center mb-3">
           <Space size="middle">
+            {user?.role === "admin" && (
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                Dashboard
+              </Button>
+            )}
+            {user?.role !== "admin" && ( // Conditionally render Order button
+              <Button
+                type="default"
+                size="small"
+                icon={<FaBoxOpen />}
+                onClick={() => navigate("/orders")}
+              >
+                Order
+              </Button>
+            )}
             <HeartOutlined className="text-lg text-gray-600 hover:text-blue-600 cursor-pointer" />
             <Badge dot>
               <BellOutlined className="text-lg text-gray-600 hover:text-blue-600 cursor-pointer" />

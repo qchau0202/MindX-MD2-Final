@@ -1,5 +1,3 @@
-import { Button } from "antd";
-import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
 
 const HeroSection = () => {
@@ -14,9 +12,9 @@ const HeroSection = () => {
             className="w-full h-full object-cover rounded-xl"
           />
           <div className="absolute top-0 left-0 w-full h-full flex flex-col gap-y-4 py-1 px-2 xl:px-4 xl:py-3 justify-center xl:gap-y-1 2xl:gap-y-4 md:gap-y-1 md:p-3">
-            <h6 className="text-white xl:leading-relaxed text-xl xl:text-2xl whitespace-nowrap xl:whitespace-normal xl:w-[50%]">
+            <h1 className="text-white xl:leading-relaxed text-xl xl:text-2xl whitespace-nowrap xl:whitespace-normal xl:w-[50%]">
               The Best Platform for Car Rental
-            </h6>
+            </h1>
             <p className="text-white xl:whitespace-normal xl:w-[50%] md:text-lg">
               Ease of doing a car rental safely and reliably. Of course at a low
               price.
@@ -44,9 +42,9 @@ const HeroSection = () => {
             className="w-full h-full object-cover rounded-xl"
           />
           <div className="absolute top-0 left-0 w-full h-full flex flex-col gap-y-4 py-1 px-2 xl:px-4 xl:py-3 justify-center xl:gap-y-1 2xl:gap-y-4 md:gap-y-1 md:p-3">
-            <h6 className="text-white xl:leading-relaxed text-xl xl:text-2xl whitespace-nowrap xl:whitespace-normal xl:w-[50%]">
+            <h1 className="text-white xl:leading-relaxed text-xl xl:text-2xl whitespace-nowrap xl:whitespace-normal xl:w-[50%]">
               Easy way to rent a car at a low price
-            </h6>
+            </h1>
             <p className="text-white xl:whitespace-normal xl:w-[50%] md:text-lg">
               Providing cheap car rental services and safe and comfortable
               facilities.
@@ -68,7 +66,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-      {/* <SearchBar /> */} 
     </div>
   );
 };

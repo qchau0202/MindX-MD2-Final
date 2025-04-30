@@ -24,7 +24,7 @@ const updateUserProfile = async (req, res) => {
 
   try {
     console.log("Updating user with ID:", req.user.userId); // Debug
-    const user = await User.findById(req.user.userId); // Sửa từ req.user.id
+    const user = await User.findById(req.user.userId);
     if (!user) {
       console.log("User not found for ID:", req.user.userId);
       return res.status(404).json({ message: "User not found" });

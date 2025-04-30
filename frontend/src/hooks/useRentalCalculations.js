@@ -1,10 +1,10 @@
 const useRentalCalculations = (car, rentalInfo) => {
   const validateInputs = () => {
     if (!car || !car._id || typeof car.pricePerDay !== "number") {
-      return "Thiếu hoặc sai thông tin xe (ID hoặc giá thuê).";
+      return "Missed or Wrong information.";
     }
     if (!rentalInfo) {
-      return "Thiếu thông tin thuê xe.";
+      return "Information is missing.";
     }
 
     const requiredFields = [
@@ -16,9 +16,18 @@ const useRentalCalculations = (car, rentalInfo) => {
       "dropOffTime",
     ];
 
-    const invalidField = requiredFields.find(
-      (field) => !rentalInfo[field] || rentalInfo[field].includes("Select your")
-    );
+    const invalidField = requiredFields.find((field) => {
+      const value = rentalInfo[field];
+      // Check if field is missing or not a string when expected
+      if (!value || value === null || value === undefined) {
+        return true;
+      }
+      // Only call includes on strings
+      if (typeof value === "string" && value.includes("Select your")) {
+        return true;
+      }
+      return false;
+    });
 
     return invalidField
       ? `Vui lòng điền ${invalidField
@@ -44,7 +53,7 @@ const useRentalCalculations = (car, rentalInfo) => {
 
     if (isNaN(start) || isNaN(end)) {
       return {
-        error: "Ngày hoặc giờ không hợp lệ.",
+        error: "Invalid date or time.",
         subtotal: 0,
         totalPrice: 0,
         durationInDays: 0,
@@ -60,7 +69,7 @@ const useRentalCalculations = (car, rentalInfo) => {
 
     if (durationInDays <= 0) {
       return {
-        error: "Ngày kết thúc phải sau ngày bắt đầu.",
+        error: "End date must be after start date.",
         subtotal: 0,
         totalPrice: 0,
         durationInDays: 0,
@@ -78,4 +87,5 @@ const useRentalCalculations = (car, rentalInfo) => {
 
   return calculateRentalDetails();
 };
+
 export default useRentalCalculations;

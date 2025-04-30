@@ -20,7 +20,7 @@ const Register = () => {
       await registerAPI(submitValues);
       messageApi.open({
         type: "success",
-        content: "Đăng ký thành công!",
+        content: "Registered successfully!",
         duration: 2,
       });
       await delay(2000);
@@ -28,7 +28,7 @@ const Register = () => {
     } catch (err) {
       messageApi.open({
         type: "error",
-        content: err.response?.data?.message || "Đăng ký thất bại!",
+        content: err.response?.data?.message || "Registered failed!",
         duration: 2,
       });
     } finally {
@@ -41,39 +41,39 @@ const Register = () => {
       {contextHolder}
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Đăng ký
+          Register
         </h2>
         <Form onFinish={onFinish} layout="vertical" className="space-y-4">
           <Form.Item
             name="name"
             label="Tên"
-            rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+            rules={[{ required: true, message: "Please enter your name" }]}
           >
             <Input
               size="large"
-              placeholder="Nhập tên của bạn"
+              placeholder="Enter your name"
               className="rounded-md"
             />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: "Vui lòng nhập email" }]}
+            rules={[{ required: true, message: "Please enter your email" }]}
           >
             <Input
               size="large"
-              placeholder="Nhập email của bạn"
+              placeholder="Enter your email"
               className="rounded-md"
             />
           </Form.Item>
           <Form.Item
             name="password"
-            label="Mật khẩu"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+            label="Password"
+            rules={[{ required: true, message: "Please enter your password" }]}
           >
             <Input.Password
               size="large"
-              placeholder="Nhập mật khẩu"
+              placeholder="Enter your password"
               className="rounded-md"
             />
           </Form.Item>
@@ -85,13 +85,13 @@ const Register = () => {
             block
             className="mt-4 bg-blue-600 hover:bg-blue-700 rounded-md"
           >
-            Đăng ký
+            Register
           </Button>
         </Form>
         <p className="mt-4 text-center text-gray-600">
-          Đã có tài khoản?{" "}
+          Already have an account?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">
-            Đăng nhập
+            Login
           </Link>
         </p>
       </div>

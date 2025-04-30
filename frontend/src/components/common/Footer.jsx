@@ -95,7 +95,7 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-        <p className="text-gray-500">©2022 MORENT. All rights reserved</p>
+        <p className="text-gray-500">©2025 MORENT. All rights reserved</p>
         <div className="space-x-6 text-gray-600">
           <a href="#" className="hover:text-blue-600">
             Privacy & Policy

@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-// Đăng ký tài khoản khách hàng
+// Register
 const register = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
@@ -26,7 +26,7 @@ const register = async (req, res) => {
   }
 };
 
-// Đăng nhập
+// Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -48,6 +48,7 @@ const login = async (req, res) => {
   }
 };
 
+// Middleware to protect routes
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -64,6 +65,7 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+// Get current user
 const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");

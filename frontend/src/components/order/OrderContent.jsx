@@ -3,7 +3,7 @@ import {
   FaCar,
   FaMapMarkerAlt,
   FaUserTie,
-  FaArrowRight, // thêm icon mũi tên
+  FaArrowRight,
 } from "react-icons/fa";
 
 const OrderContent = ({ order }) => {

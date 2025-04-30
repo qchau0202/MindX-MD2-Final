@@ -1,13 +1,53 @@
-import {rentalData} from "../../mock-data/data.js"
-const TopCarsRental = () => {
-  // const rentalData = [
-  //   { type: "Sport Car", count: "17,439", color: "bg-gray-800" },
-  //   { type: "SUV", count: "9,478", color: "bg-blue-700" },
-  //   { type: "Coupe", count: "18,197", color: "bg-blue-500" },
-  //   { type: "Hatchback", count: "12,510", color: "bg-blue-300" },
-  //   { type: "MPV", count: "14,406", color: "bg-blue-100" },
-  // ];
+import { useState, useEffect } from "react";
+import { getOrders } from "../../services/api";
 
+const TopCarsRental = () => {
+  const [topCars, setTopCars] = useState([]);
+  const [totalRentals, setTotalRentals] = useState(0);
+
+  useEffect(() => {
+    const fetchTopCars = async () => {
+      try {
+        const response = await getOrders();
+        const orders = response.data.data;
+
+        // Count vehicle types
+        const typeCounts = orders.reduce((acc, order) => {
+          const type = order.vehicle.type;
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
+
+        // Convert to array and sort
+        const sortedTypes = Object.entries(typeCounts)
+          .map(([type, count]) => ({
+            type,
+            count,
+            color: getColorForType(type),
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+
+        setTopCars(sortedTypes);
+        setTotalRentals(orders.length);
+      } catch (error) {
+        console.error("Error fetching top cars:", error);
+      }
+    };
+
+    fetchTopCars();
+  }, []);
+
+  const getColorForType = (type) => {
+    const colors = [
+      "bg-blue-500",
+      "bg-green-500",
+      "bg-yellow-500",
+      "bg-red-500",
+      "bg-purple-500",
+    ];
+    return colors[type.charCodeAt(0) % colors.length] || "bg-gray-500";
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -19,7 +59,7 @@ const TopCarsRental = () => {
         <div className="relative w-32 h-32">
           <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
             <div className="text-center">
-              <p className="text-lg font-semibold">72,030</p>
+              <p className="text-lg font-semibold">{totalRentals}</p>
               <p className="text-xs text-gray-500">Rental Car</p>
             </div>
           </div>
@@ -27,7 +67,7 @@ const TopCarsRental = () => {
 
         {/* Rental List */}
         <ul className="flex-1 space-y-2">
-          {rentalData.map((item, index) => (
+          {topCars.map((item, index) => (
             <li key={index} className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className={`w-3 h-3 rounded-full ${item.color}`}></span>

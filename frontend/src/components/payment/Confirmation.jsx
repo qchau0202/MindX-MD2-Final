@@ -22,7 +22,7 @@ const Confirmation = ({ car, rentalInfo }) => {
     if (!agreements.terms) {
       messageApi.open({
         type: "error",
-        content: "Bạn phải đồng ý với các điều khoản và điều kiện.",
+        content: "You have to agree to the terms and conditions.",
         duration: 5,
       });
       return;
@@ -40,7 +40,7 @@ const Confirmation = ({ car, rentalInfo }) => {
     if (totalPrice <= 0) {
       messageApi.open({
         type: "error",
-        content: "Tổng giá thuê không hợp lệ.",
+        content: "Total price must be greater than 0.",
         duration: 5,
       });
     }
@@ -64,22 +64,19 @@ const Confirmation = ({ car, rentalInfo }) => {
         pickUpTime: rentalInfo.pickUpTime,
         dropOffTime: rentalInfo.dropOffTime,
       };
-
-      console.log("Gửi đơn hàng:", orderData); // Log để debug
-
       const response = await createOrder(orderData);
 
       if (response.data.success) {
         messageApi.open({
           type: "success",
-          content: "Đặt xe thành công!",
+          content: "Order created successfully!",
           duration: 5,
         });
         navigate("/orderSuccess");
       } else {
         messageApi.open({
           type: "error",
-          content: response.data.message || "Không thể tạo đơn hàng.",
+          content: response.data.message || "Cannot create order.",
           duration: 5,
         });
       }
@@ -87,7 +84,7 @@ const Confirmation = ({ car, rentalInfo }) => {
       const errorMsg =
         error.response?.data?.message ||
         error.message ||
-        "Đã xảy ra lỗi khi tạo đơn hàng.";
+        "Error creating order. Please try again.";
       messageApi.open({
         type: "error",
         content: errorMsg,
@@ -97,7 +94,7 @@ const Confirmation = ({ car, rentalInfo }) => {
       if (errorMsg.includes("Invalid token")) {
         messageApi.open({
           type: "error",
-          content: "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.",
+          content: "Session expired. Please log in again.",
           duration: 3,
         });
         navigate("/login");
@@ -111,11 +108,11 @@ const Confirmation = ({ car, rentalInfo }) => {
     <div className="bg-white rounded-xl shadow-lg p-6">
       {contextHolder}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold text-gray-800">Xác nhận</h1>
-        <span className="text-gray-500 text-sm">Bước 4/4</span>
+        <h1 className="text-2xl font-semibold text-gray-800">Confirm</h1>
+        <span className="text-gray-500 text-sm">Step 4/4</span>
       </div>
       <p className="text-gray-500 mb-6 text-lg">
-        Chỉ còn vài bước nữa là hoàn tất! Hãy kiểm tra và xác nhận.
+        Please agree to the terms and conditions before proceeding with the rental.
       </p>
 
       <div className="flex flex-col gap-4 mb-6">
@@ -126,7 +123,7 @@ const Confirmation = ({ car, rentalInfo }) => {
             className="text-gray-700"
             style={{ fontSize: "16px" }}
           >
-            Tôi đồng ý nhận email tiếp thị và bản tin. Không spam, cam kết!
+            I agree to receive marketing communications from MORENT.
           </Checkbox>
         </div>
         <div className="bg-gray-100 rounded-lg p-3">
@@ -136,7 +133,7 @@ const Confirmation = ({ car, rentalInfo }) => {
             className="text-gray-700"
             style={{ fontSize: "16px" }}
           >
-            Tôi đồng ý với các điều khoản, điều kiện và chính sách bảo mật.
+            I agree to the terms and conditions and privacy policy.
           </Checkbox>
         </div>
       </div>
@@ -149,16 +146,15 @@ const Confirmation = ({ car, rentalInfo }) => {
         loading={loading}
         disabled={loading}
       >
-        Thuê ngay
+        Rent now
       </Button>
 
       <div className="mt-6">
         <p className="text-gray-700 font-semibold text-sm">
-          Dữ liệu của bạn được bảo mật
+          Your data is secure with us.
         </p>
         <p className="text-gray-500 text-sm">
-          Chúng tôi sử dụng công nghệ bảo mật tiên tiến để mang lại trải nghiệm
-          tốt nhất.
+          We use advanced security technology to provide the best experience.
         </p>
       </div>
     </div>

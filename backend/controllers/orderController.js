@@ -20,7 +20,7 @@ const calculateTotalPrice = (startDate, endDate, dailyPrice) => {
   return totalPrice;
 };
 
-// Đặt xe
+// Create an order
 const createOrder = async (req, res) => {
   try {
     if (req.user.role !== "customer") {
@@ -41,7 +41,6 @@ const createOrder = async (req, res) => {
       dropOffTime,
     } = req.body;
 
-    // Kiểm tra các trường bắt buộc
     if (
       !vehicleId ||
       !startDate ||
@@ -82,7 +81,7 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Kiểm tra xung đột lịch
+    // Check for vehicle availability
     const conflictingOrders = await Order.find({
       vehicleId,
       status: { $in: ["pending", "confirmed"] },
@@ -94,8 +93,6 @@ const createOrder = async (req, res) => {
         message: "Vehicle is already booked for the selected dates",
       });
     }
-
-    // Kiểm tra totalPrice
     const calculatedTotalPrice = calculateTotalPrice(
       startDate,
       endDate,
@@ -137,7 +134,223 @@ const createOrder = async (req, res) => {
   }
 };
 
-// Xem danh sách đơn hàng
+// Accept an order
+const acceptOrder = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only admins can accept orders",
+      });
+    }
+
+    const { orderId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending orders can be accepted",
+      });
+    }
+
+    order.status = "confirmed";
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order accepted successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error("Error accepting order:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while accepting order",
+    });
+  }
+};
+
+// Reject an order
+const rejectOrder = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only admins can reject orders",
+      });
+    }
+
+    const { orderId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending orders can be rejected",
+      });
+    }
+
+    order.status = "cancelled";
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order rejected successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error("Error rejecting order:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while rejecting order",
+    });
+  }
+};
+
+// Cancel an order
+const cancelOrder = async (req, res) => {
+  try {
+    if (req.user.role !== "customer") {
+      return res.status(403).json({
+        success: false,
+        message: "Only customers can cancel orders",
+      });
+    }
+
+    const { orderId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.customerId.toString() !== req.user.userId) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only cancel your own orders",
+      });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Only pending orders can be cancelled",
+      });
+    }
+
+    order.status = "cancelled";
+    await order.save();
+
+    return res.status(200).json({
+      success: false,
+      message: "Order cancelled successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error("Error cancelling order:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while cancelling order",
+    });
+  }
+};
+
+// Delete an order
+const deleteOrder = async (req, res) => {
+  try {
+    if (req.user.role !== "customer") {
+      return res.status(403).json({
+        success: false,
+        message: "Only customers can delete orders",
+      });
+    }
+
+    const { orderId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.customerId.toString() !== req.user.userId) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only delete your own orders",
+      });
+    }
+
+    if (order.status !== "cancelled") {
+      return res.status(400).json({
+        success: false,
+        message: "Only cancelled orders can be deleted",
+      });
+    }
+
+    await Order.deleteOne({ _id: orderId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while deleting order",
+    });
+  }
+};
+
+// Get all orders
 const getOrders = async (req, res) => {
   try {
     let query = {};
@@ -146,7 +359,7 @@ const getOrders = async (req, res) => {
     } else if (req.user.role === "car_provider") {
       query.providerId = req.user.userId;
     } else if (req.user.role === "admin") {
-      // Admin có thể xem tất cả đơn hàng
+      // Admin can see all orders
     } else {
       return res.status(403).json({
         success: false,
@@ -177,7 +390,7 @@ const getOrders = async (req, res) => {
   }
 };
 
-// Xem danh sách đơn hàng với chi tiết đầy đủ
+// Get orders with details
 const getOrdersWithDetails = async (req, res) => {
   try {
     let matchQuery = {};
@@ -273,4 +486,12 @@ const getOrdersWithDetails = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getOrders, getOrdersWithDetails };
+module.exports = {
+  createOrder,
+  getOrders,
+  getOrdersWithDetails,
+  cancelOrder,
+  deleteOrder,
+  acceptOrder,
+  rejectOrder,
+};

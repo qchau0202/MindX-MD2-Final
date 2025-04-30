@@ -3,16 +3,13 @@ const router = express.Router();
 const orderController = require("../controllers/orderController");
 const auth = require("../middleware/auth");
 
-// Xác nhận đơn hàng
-// router.post("/confirm", auth, orderController.confirmOrder);
-
-// Tạo đơn hàng
+// CRUD
 router.post("/", auth, orderController.createOrder);
-
-// Xem danh sách đơn hàng
 router.get("/", auth, orderController.getOrders);
-
-// Xem danh sách đơn hàng với chi tiết đầy đủ
 router.get("/details", auth, orderController.getOrdersWithDetails);
+router.patch("/:orderId/cancel", auth, orderController.cancelOrder);
+router.delete("/:orderId", auth, orderController.deleteOrder);
+router.patch("/:orderId/accept", auth, orderController.acceptOrder);
+router.patch("/:orderId/reject", auth, orderController.rejectOrder);
 
 module.exports = router;

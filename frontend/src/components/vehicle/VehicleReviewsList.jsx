@@ -20,15 +20,15 @@ const VehicleReviewsList = ({ vehicleId }) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md mt-4">
-      <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
+      <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
       {mockReviews.length === 0 ? (
         <p>No reviews yet.</p>
       ) : (
         mockReviews.map((review) => (
-          <div key={review.id} className="mb-4 border-b pb-4">
+          <div key={review.id} className="my-4 border-b border-b-gray-200 pb-4">
             <div className="flex justify-between">
-              <span className="font-semibold">{review.user}</span>
-              <span>{review.date}</span>
+              <span className="text-lg font-semibold">{review.user}</span>
+              <span className="text-gray-500">{review.date}</span>
             </div>
             <div className="flex items-center mb-2">
               {[...Array(5)].map((_, i) => (
@@ -44,7 +44,7 @@ const VehicleReviewsList = ({ vehicleId }) => {
                 </svg>
               ))}
             </div>
-            <p>{review.content}</p>
+            <p className="text-gray-500">{review.content}</p>
           </div>
         ))
       )}

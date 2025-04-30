@@ -72,6 +72,19 @@ const Orders = () => {
     setFilteredOrders(result);
   }, [orders, filter, searchTerm]);
 
+  // Callback to update orders after cancellation or deletion
+  const updateOrderStatus = (orderId, newStatus) => {
+    if (newStatus === "deleted") {
+      setOrders(orders.filter((order) => order._id !== orderId));
+    } else {
+      setOrders(
+        orders.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    }
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -112,7 +125,7 @@ const Orders = () => {
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
+    <div className="p-6">
       {/* Header with search and filter */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Your Orders</h1>
@@ -125,14 +138,14 @@ const Orders = () => {
               placeholder="Search orders..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 w-56 transition-all duration-200"
+              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 hover:border-blue-500 focus:border-blue-500 w-60 bg-white"
             />
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
           </div>
 
           {/* Filter Dropdown */}
           <Dropdown overlay={filterMenu} trigger={["click"]}>
-            <Button className="flex items-center space-x-2">
+            <Button className="flex items-center w-54">
               <FaFilter />
               <span>
                 {filter === "all"
@@ -154,6 +167,7 @@ const Orders = () => {
               key={order._id}
               order={order}
               statusStyle={getStatusColor(order.status)}
+              onUpdateOrder={updateOrderStatus}
             />
           ))}
         </div>

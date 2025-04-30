@@ -1,7 +1,7 @@
 import React from "react";
 import { Select, DatePicker, TimePicker } from "antd";
 import dayjs from "dayjs";
-import { locations } from "../../mock-data/data"; // Import locations
+import { locations } from "../../mock-data/data";
 
 const { Option } = Select;
 
